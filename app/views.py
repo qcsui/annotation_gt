@@ -50,7 +50,7 @@ def load_file():
     html_path = url_for('static', filename=f'data/htmls/{filename}')
     # 假设 PDF 文件名是基于 HTML 文件名的第一个下划线前的部分
     pdf_base_filename = filename.split('_')[0]
-    pdf_path = url_for('static', filename=f'data/pdfs/{pdf_base_filename}_datasheet.pdf') + f'#page={page_number}'
+    pdf_path = url_for('static', filename=f'data/pdfs/{pdf_base_filename}_datasheet.pdf') + f'#page={page_number}&view=FitH'
 
     return jsonify({'html_path': html_path, 'pdf_path': pdf_path})
 
