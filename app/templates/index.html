@@ -5,10 +5,13 @@
     <h2>Files</h2>
     <ul id="fileList">
         {% for file in files %}
-            <li onclick="loadFile('{{ file }}')">{{ file }}</li>
+            <li>
+                <input type="checkbox" class="file-checkbox" id="check-{{ file }}" data-filename="{{ file }}">
+                <label onclick="loadFile('{{ file }}')">{{ file }}</label>
+            </li>
         {% endfor %}
     </ul>
-    
+    <button onclick="submitCheckedFiles()">Submit</button>
 </div>
 <div style="width: 40%; float: left; height: 100%;">
     <h2>Extracted Data</h2>
@@ -22,28 +25,40 @@
 
 {% block scripts %}
 <script>
-    function loadFile(filename) {
-        fetch('/load_file', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({filename: filename})
-        })
-        .then(response => response.json())
-        .then(data => {
-            document.getElementById('htmlPreview').src = data.html_path;
-            document.getElementById('pdfPreview').src = data.pdf_path;
-        })
-        .catch(error => console.error('Error loading the file:', error));
-    }
+function loadFile(filename){
+    fetch('/load_file', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({filename: filename})
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById('htmlPreview').src = data.html_path;
+        document.getElementById('pdfPreview').src = data.pdf_path;
+    })
+    .catch(error => console.error('Error loading the file:', error));
+}
 
+function submitCheckedFiles() {
+    const checkboxes = document.querySelectorAll('.file-checkbox');
+    const checkedFiles = Array.from(checkboxes)
+                              .filter(box => box.checked)
+                              .map(box => box.getAttribute('data-filename'));
 
-    function markConfirm(filename, event) {
-        event.stopPropagation(); // 阻止触发 li 的点击事件
-        const isChecked = document.getElementById('check-' + filename).checked;
-        console.log(filename + " is " + (isChecked ? "confirmed" : "not confirmed"));
-        // 可以在这里发送 AJAX 请求来更新服务器上的确认状态
-    }
+    fetch('/save_checked_files', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({files: checkedFiles})
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('Files saved: ' + data.saved);
+    })
+    .catch(error => console.error('Error saving files:', error));
+}
 </script>
 {% endblock %}

@@ -53,3 +53,14 @@ def load_file():
 
     return jsonify({'html_path': html_path, 'pdf_path': pdf_path})
 
+@main.route('/save_checked_files', methods=['POST'])
+def save_checked_files():
+    data = request.get_json()
+    checked_files = data['files']
+    save_path = os.path.join(main.root_path, 'static', 'checked_files.txt')
+
+    with open(save_path, 'w') as file:
+        for filename in checked_files:
+            file.write(filename + '\n')
+
+    return jsonify({'saved': len(checked_files)})
