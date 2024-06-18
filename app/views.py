@@ -10,7 +10,7 @@ main = Blueprint('main', __name__)
 def index():
     print("----------Current Working Directory:", os.getcwd())
     # 假设HTML和PDF文件存放在static/data目录下
-    html_directory = os.path.join('data', 'htmls')
+    html_directory = os.path.join(os.getcwd(), 'app', 'static', 'data', 'htmls')
     files = os.listdir(html_directory)
     files = [file for file in files if file.endswith('.html')]
     return render_template('index.html', files=files)
@@ -18,8 +18,9 @@ def index():
 @main.route('/review/<filename>')
 def review(filename):
     # 根据文件名构造HTML和PDF的路径
-    html_file = f"data/htmls/{filename}"
-    pdf_file = f"data/pdfs/{filename.replace('html', 'pdf')}"
+    print("----------Current Working Directory:", os.getcwd())
+    html_file = f"./app/static/data/htmls/{filename}"
+    pdf_file = f"./app/static/data/pdfs/{filename.replace('html', 'pdf')}"
     page_number = '1'  # 这里简化处理，实际使用时可能需要更复杂的逻辑来确定页码
     return render_template('review.html', html_file=html_file, pdf_file=pdf_file, page_number=page_number)
 

@@ -4,3 +4,4 @@ data/htmls/*.html
 data/pdfs/*.pdf
 app/__pycache__/views.cpython-310.pyc
 app/__pycache__/__init__.cpython-310.pyc
+app/__pycache__/views.cpython-310.pyc
