@@ -1,6 +1,49 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Welcome to the PDF Data Reviewer</h1>
-    <p>Click on the links to review the data extracted from PDFs.</p>
+<div style="width: 20%; float: left; height: 100%; overflow: auto;">
+    <h2>Files</h2>
+    <ul id="fileList">
+        {% for file in files %}
+            <li onclick="loadFile('{{ file }}')">{{ file }}</li>
+        {% endfor %}
+    </ul>
+    
+</div>
+<div style="width: 40%; float: left; height: 100%;">
+    <h2>Extracted Data</h2>
+    <iframe id="htmlPreview" height="800"></iframe>
+</div>
+<div style="width: 40%; float: left; height: 100%;">
+    <h2>PDF Preview</h2>
+    <iframe id="pdfPreview" height="800"></iframe>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    function loadFile(filename) {
+        fetch('/load_file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({filename: filename})
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('htmlPreview').src = data.html_path;
+            document.getElementById('pdfPreview').src = data.pdf_path;
+        })
+        .catch(error => console.error('Error loading the file:', error));
+    }
+
+
+    function markConfirm(filename, event) {
+        event.stopPropagation(); // 阻止触发 li 的点击事件
+        const isChecked = document.getElementById('check-' + filename).checked;
+        console.log(filename + " is " + (isChecked ? "confirmed" : "not confirmed"));
+        // 可以在这里发送 AJAX 请求来更新服务器上的确认状态
+    }
+</script>
 {% endblock %}

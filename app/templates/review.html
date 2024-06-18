@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div style="width: 49%; display: inline-block;">
+        <h2>HTML Review</h2>
+        <iframe src="{{ url_for('static', filename=html_file) }}" height="800"></iframe>
+        <button onclick="markReview('confirm', '{{ filename }}')">Confirm</button>
+        <button onclick="markReview('reject', '{{ filename }}')">Reject</button>
+        <div id="status-{{ filename }}"></div>
+    </div>
+    <div style="width: 49%; display: inline-block;">
+        <h2>PDF View</h2>
+        <iframe src="{{ url_for('static', filename=pdf_file) }}#page={{ page_number }}" height="800"></iframe>
+    </div>
+{% endblock %}
+
+{% block scripts %}
+    <script>
+        function markReview(action, filename) {
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', '/mark/' + action);
+            xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    document.getElementById('status-' + filename).innerText = 'Marked as ' + action;
+                } else {
+                    document.getElementById('status-' + filename).innerText = 'Error marking';
+                }
+            };
+            xhr.send(JSON.stringify({filename: filename}));
+        }
+    </script>
+{% endblock %}
