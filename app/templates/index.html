@@ -20,27 +20,39 @@
 </div>
 <div style="width: 40%; float: left; height: 100%;">
     <h2>PDF Preview</h2>
+    <div id="pdfPathDisplay"></div> <!-- 新增一个用于显示路径的div -->
     <iframe id="pdfPreview" height="800"></iframe>
 </div>
 {% endblock %}
 
 {% block scripts %}
 <script>
-function loadFile(filename){
+function loadFile(filename) {
     fetch('/load_file', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({filename: filename})
+        body: JSON.stringify({ filename: filename })
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('htmlPreview').src = data.html_path;
-        document.getElementById('pdfPreview').src = data.pdf_path;
+        document.getElementById('htmlPreview').src = data.html_path + '?t=' + new Date().getTime();
+        
+        // 将 pdf_path 打印在网页上
+        const pdfPathDisplay = document.getElementById('pdfPathDisplay');
+        pdfPathDisplay.textContent = 'PDF Path: ' + data.pdf_path;
+        
+        // 强制刷新 pdfPreview
+        const pdfPreview = document.getElementById('pdfPreview');
+        pdfPreview.src = '';  // 先清空 src
+        setTimeout(() => {
+            pdfPreview.src = data.pdf_path + '&t=' + new Date().getTime();  // 再设置为新的路径
+        }, 10);  // 设置一个短暂的延迟
     })
     .catch(error => console.error('Error loading the file:', error));
 }
+
 
 function submitCheckedFiles() {
     const checkboxes = document.querySelectorAll('.file-checkbox');
