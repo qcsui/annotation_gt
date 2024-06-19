@@ -7,7 +7,7 @@
         {% for file in files %}
             <li>
                 <input type="checkbox" class="file-checkbox" id="check-{{ file }}" data-filename="{{ file }}">
-                <label onclick="loadFile('{{ file }}')">{{ file }}</label>
+                <label onclick="loadFile('{{ file }}'); highlightSelected(this);">{{ file }}</label>
             </li>
         {% endfor %}
     </ul>
@@ -52,6 +52,18 @@ function loadFile(filename) {
     })
     .catch(error => console.error('Error loading the file:', error));
 }
+
+function highlightSelected(labelElement) {
+    // 移除所有列表项的高亮样式
+    const items = document.querySelectorAll('.file-container li');
+    items.forEach(item => {
+        item.classList.remove('highlighted');
+    });
+    
+    // 给当前点击的列表项添加高亮样式
+    labelElement.parentElement.classList.add('highlighted');
+}
+
 
 
 function submitCheckedFiles() {

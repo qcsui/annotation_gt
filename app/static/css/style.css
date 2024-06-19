@@ -41,6 +41,10 @@ html, body {
     border-bottom: 1px solid #eee;
 }
 
+.file-container li.highlighted {
+    background-color: #d3d3d3;  /* 高亮背景颜色 */
+}
+
 .file-container button {
     margin: 10px;
     padding: 10px;
