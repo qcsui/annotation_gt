@@ -2,7 +2,12 @@ app/static/data/htmls/*.html
 app/static/data/pdfs/*.pdf
 data/htmls/*.html
 data/pdfs/*.pdf
+app/static/data/jsons/*.json
+app/static/data/matched/
 app/__pycache__/views.cpython-310.pyc
 app/__pycache__/__init__.cpython-310.pyc
 app/__pycache__/views.cpython-310.pyc
 app/static/data.zip
+app/static/data/matched.zip
+test/test.npz
+test/*.npz
